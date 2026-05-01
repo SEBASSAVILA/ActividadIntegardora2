@@ -104,5 +104,7 @@ $productos = $controller->mostrarProductos();
     </div>
 </div>
 
+
+
 </body>
 </html>

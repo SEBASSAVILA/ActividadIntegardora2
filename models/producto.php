@@ -2,43 +2,54 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Producto {
-    private $db;
+    private PDO $db;
 
     public function __construct() {
-        // Instanciamos la conexión
-        $database = new Database();
-        $this->db = $database->getConnection();
+        // Usamos el método estático de tu clase Database
+        $this->db = Database::getConnection(); 
     }
 
-    // LISTAR: Obtener todos los productos
-    public function listar() {
-        $query = "SELECT id, nombre, precio, stock, creado_en FROM productos ORDER BY id DESC";
-        $stmt = $this->db->prepare($query);
+    // Método para leer todos los productos
+    public function listar(): array {
+        $stmt = $this->db->prepare(
+            "SELECT id, nombre, precio, stock, creado_en 
+             FROM productos ORDER BY id DESC"
+        );
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(); 
     }
 
-    // CREAR: Insertar un producto con las validaciones que pide tu tarea
-    public function crear($nombre, $precio, $stock) {
-        // Validaciones del lado del servidor (el "Plus")
-        if (empty($nombre)) return "El nombre no puede estar vacío";
-        if ($precio <= 0) return "El precio debe ser mayor a 0";
-        if ($stock < 0) return "El stock no puede ser negativo";
+    // Método para insertar con validaciones profesionales
+    public function crear(string $nombre, float $precio, int $stock): array {
+        $nombre  = trim($nombre);
+        $errores = [];
 
-        $query = "INSERT INTO productos (nombre, precio, stock) VALUES (:nombre, :precio, :stock)";
-        $stmt = $this->db->prepare($query);
-        
-        return $stmt->execute([
-            ':nombre' => $nombre,
-            ':precio' => $precio,
-            ':stock'  => $stock
+        if ($nombre === '') $errores[] = 'El nombre no puede estar vacío.';
+        if (strlen($nombre) > 100) $errores[] = 'El nombre no puede superar 100 caracteres.';
+        if ($precio <= 0) $errores[] = 'El precio debe ser mayor a 0.';
+        if ($stock < 0) $errores[] = 'El stock no puede ser negativo.';
+
+        if ($errores) return ['ok' => false, 'errores' => $errores];
+
+        $stmt = $this->db->prepare(
+            "INSERT INTO productos (nombre, precio, stock) 
+             VALUES (:nombre, :precio, :stock)"
+        );
+
+        $stmt->execute([
+            ':nombre' => htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8'),
+            ':precio' => round($precio, 2),
+            ':stock'  => $stock,
         ]);
+
+        return ['ok' => true, 'id' => (int) $this->db->lastInsertId()];
     }
 
-    // ELIMINAR: Borrar por ID
-    public function eliminar($id) {
-        $query = "DELETE FROM productos WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        return $stmt->execute([':id' => $id]);
+    // Método para borrar
+    public function eliminar(int $id): bool {
+        if ($id <= 0) return false;
+        $stmt = $this->db->prepare("DELETE FROM productos WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        return $stmt->rowCount() > 0;
     }
 }

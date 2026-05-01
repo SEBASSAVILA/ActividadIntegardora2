@@ -13,25 +13,24 @@ class ProductoController {
     }
 
     public function registrar() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Capturamos y limpiamos ligeramente los datos
-            $nombre = $_POST['nombre'] ?? '';
-            $precio = (float)($_POST['precio'] ?? 0);
-            $stock  = (int)($_POST['stock'] ?? 0);
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $nombre = $_POST['nombre'] ?? '';
+        $precio = (float)($_POST['precio'] ?? 0);
+        $stock  = (int)($_POST['stock'] ?? 0);
 
-            // Llamamos al modelo (que ahora devuelve un array)
-            $resultado = $this->modelo->crear($nombre, $precio, $stock);
+        // Aquí está el cambio: $resultado es un ARRAY
+        $resultado = $this->modelo->crear($nombre, $precio, $stock);
 
-            if ($resultado['ok']) {
-                // Si todo salió bien, redirigimos con exito
-                header("Location: productos.php?success=1");
-            } else {
-                $errorMsg = implode(", ", $resultado['errores']);
-                header("Location: productos.php?error=" . urlencode($errorMsg));
-            }
-            exit();
+        if ($resultado['ok']) { 
+            header("Location: productos.php?success=1");
+        } else {
+            // Unimos los errores en un solo texto para la URL
+            $errorMsg = implode(", ", $resultado['errores']);
+            header("Location: productos.php?error=" . urlencode($errorMsg));
         }
+        exit();
     }
+}
 
     // No olvides agregar la acción para eliminar que también pide tu tarea
     public function eliminar() {
@@ -46,3 +45,4 @@ class ProductoController {
         }
     }
 }
+
