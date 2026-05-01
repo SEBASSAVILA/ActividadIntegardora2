@@ -45,11 +45,19 @@ class Venta {
         }
     }
 
-    public function listarVentas(): array {
-        $sql = "SELECT v.id, p.nombre, v.cantidad, v.total, v.fecha_venta 
+   public function listarVentas(): array {
+        // Usamos JOIN para traer el nombre del producto aunque esté en otra tabla
+        $sql = "SELECT 
+                    v.id, 
+                    p.nombre, 
+                    v.cantidad, 
+                    v.total, 
+                    v.fecha_venta 
                 FROM ventas v 
-                JOIN productos p ON v.producto_id = p.id 
-                ORDER BY v.fecha_venta DESC";
-        return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+                INNER JOIN productos p ON v.producto_id = p.id 
+                ORDER BY v.id DESC"; // Ordenamos por ID si falla la fecha
+        
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
