@@ -1,34 +1,35 @@
 <?php
-require_once __DIR__ . '/../models/venta.php';
+require_once __DIR__ . '/../services/ventaservicio.php';
 require_once __DIR__ . '/../models/producto.php';
 
 class VentaController {
-    private $modeloVenta;
+    private $servicio;
     private $modeloProducto;
 
     public function __construct() {
-        $this->modeloVenta = new Venta();
+        $this->servicio = new VentaServicio();
         $this->modeloProducto = new Producto();
     }
 
     public function index() {
-        // Necesitamos los productos para llenar el select del formulario
-        $productos = $this->modeloProducto->listar();
-        $ventas = $this->modeloVenta->listarVentas();
-        return ['productos' => $productos, 'ventas' => $ventas];
+        // Obtenemos productos para el select y las ventas para la tabla
+        return [
+            'productos' => $this->modeloProducto->listar(),
+            'ventas' => (new Venta())->listarVentas()
+        ];
     }
 
     public function procesar() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $productoId = (int)$_POST['producto_id'];
-            $cantidad = (int)$_POST['cantidad'];
+            $id = (int)$_POST['producto_id'];
+            $cant = (int)$_POST['cantidad'];
 
-            $res = $this->modeloVenta->registrarVenta($productoId, $cantidad);
-            
-            if ($res['ok']) {
+            $error = $this->servicio->ejecutarVenta($id, $cant);
+
+            if ($error === true) {
                 header("Location: ventas.php?success=1");
             } else {
-                header("Location: ventas.php?error=" . urlencode($res['error']));
+                header("Location: ventas.php?error=" . urlencode($error));
             }
             exit();
         }
