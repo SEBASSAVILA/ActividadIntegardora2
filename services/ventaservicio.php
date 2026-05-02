@@ -11,25 +11,49 @@ class VentaServicio {
         $this->modeloProducto = new Producto();
     }
 
+    /**
+     * Lógica de negocio para ejecutar una venta
+     * Retorna true si fue exitosa o un string con el mensaje de error
+     */
     public function ejecutarVenta(int $productoId, int $cantidad) {
-        // 1. Buscamos el producto para ver si existe y tiene stock
-        // Aquí podrías crear un método "obtenerPorId" en tu modelo producto
+        // 1. Validaciones básicas de entrada
+        if ($cantidad <= 0) {
+            return "La cantidad debe ser mayor a cero.";
+        }
+
+        // 2. Buscar el producto para verificar existencia y stock actual
+        // Reutilizamos el listar() para no crear métodos extra, o puedes crear un buscarPorId
         $productos = $this->modeloProducto->listar();
-        $productoSeleccionado = null;
+        $productoEncontrado = null;
 
         foreach ($productos as $p) {
             if ($p['id'] == $productoId) {
-                $productoSeleccionado = $p;
+                $productoEncontrado = $p;
                 break;
             }
         }
 
-        if (!$productoSeleccionado) return "Error: Producto no encontrado.";
-        if ($productoSeleccionado['stock'] < $cantidad) {
-            return "Error: No hay suficiente stock (Disponible: " . $productoSeleccionado['stock'] . ")";
+        // 3. Verificaciones de reglas de negocio
+        if (!$productoEncontrado) {
+            return "El producto seleccionado no existe en el sistema.";
         }
 
-        // 2. Si hay stock, mandamos a registrar la venta
-        return $this->modeloVenta->registrarVenta($productoId, $cantidad, $productoSeleccionado['precio']);
+        if ($productoEncontrado['stock'] < $cantidad) {
+            return "Stock insuficiente. Solo quedan " . $productoEncontrado['stock'] . " unidades de " . $productoEncontrado['nombre'];
+        }
+
+        // 4. Si todo está OK, procedemos a la base de datos
+        // Pasamos el precio actual para que el total de la venta sea correcto
+        $resultado = $this->modeloVenta->registrarVenta(
+            $productoId, 
+            $cantidad, 
+            (float)$productoEncontrado['precio']
+        );
+
+        if ($resultado) {
+            return true;
+        } else {
+            return "Error crítico: No se pudo completar la transacción en la base de datos.";
+        }
     }
 }

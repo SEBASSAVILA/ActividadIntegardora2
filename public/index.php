@@ -20,7 +20,7 @@ $gananciaTotal = array_sum(array_column($ventas, 'total'));
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">📦 MiSistema Stock</a>
+            <a class="navbar-brand" href="#">Sitema de Stock BASSKA</a>
             <div class="navbar-nav">
                 <a class="nav-link active" href="index.php">Inicio</a>
                 <a class="nav-link" href="productos.php">Productos</a>
@@ -30,7 +30,7 @@ $gananciaTotal = array_sum(array_column($ventas, 'total'));
     </nav>
 
     <div class="container mt-5">
-        <h2 class="mb-4">Bienvenido al Panel de Control</h2>
+        <h2 class="mb-4">Bienvenidos</h2>
         <div class="row">
             <div class="col-md-6">
                 <div class="card text-white bg-primary mb-3 shadow">
