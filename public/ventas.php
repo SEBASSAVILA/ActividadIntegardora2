@@ -26,7 +26,7 @@ $ventas = $datos['ventas'];
     </div>
 
     <?php if(isset($_GET['success'])): ?>
-        <div class="alert-custom alert-success">¡Venta completada con éxito!</div>
+        <div class="alert-custom alert-success">¡Venta completada con exito!</div>
     <?php endif; ?>
 
     <?php if(isset($_GET['error'])): ?>
@@ -35,10 +35,10 @@ $ventas = $datos['ventas'];
 
     <div class="grid-layout">
         <div class="contenedor-principal">
-            <h3 class="section-subtitle">Registrar Nueva Venta</h3>
+            <h3 class="section-subtitle">Registrar nueva venta</h3>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label class="label-custom">Seleccionar Producto</label>
+                    <label class="label-custom">Seleccionar producto</label>
                     <select name="producto_id" class="form-control-custom" required>
                         <option value="">Elija un producto...</option>
                         <?php foreach($productos as $prod): ?>
@@ -59,7 +59,7 @@ $ventas = $datos['ventas'];
         </div>
 
         <div class="contenedor-principal">
-            <h3 class="section-subtitle">Historial de Transacciones</h3>
+            <h3 class="section-subtitle">Historial de transacciones</h3>
             <div class="table-container">
                 <table class="tabla-limpia">
                     <thead>
@@ -82,7 +82,7 @@ $ventas = $datos['ventas'];
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="4" class="status-empty">No se han realizado ventas.</td>
+                                <td colspan="4" class="status-empty">No se han realizado ventas</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

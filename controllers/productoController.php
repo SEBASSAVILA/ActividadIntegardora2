@@ -1,37 +1,35 @@
 <?php
 require_once __DIR__ . '/../models/producto.php';
 
-class ProductoController {
+class productoController { // Mantenlo en minúsculas si así lo prefieres
     private $modelo;
 
     public function __construct() {
         $this->modelo = new Producto();
     }
 
-    //para obtener los datos
     public function index() {
         return $this->modelo->listar();
     }
 
-    
     public function procesar() {
-        //  ELIMINA datos
+        // Lógica de eliminar, editar y crear...
         if (isset($_GET['eliminar'])) {
-            $id = (int)$_GET['eliminar'];
-            $this->modelo->eliminar($id);
+            $this->modelo->eliminar((int)$_GET['eliminar']);
             header("Location: productos.php");
             exit();
         }
 
-        //  GUARDAR datos 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $nombre = $_POST['nombre'];
-            $precio = (float)$_POST['precio'];
-            $stock = (int)$_POST['stock'];
-
-            $this->modelo->crear($nombre, $precio, $stock);
-            header("Location: productos.php");
-            exit();
+            if (isset($_POST['accion']) && $_POST['accion'] == 'editar') {
+                $this->modelo->editar((int)$_POST['id_edit'], $_POST['nombre'], (float)$_POST['precio'], (int)$_POST['stock']);
+                header("Location: productos.php?success=editado");
+                exit();
+            } else {
+                $this->modelo->crear($_POST['nombre'], (float)$_POST['precio'], (int)$_POST['stock']);
+                header("Location: productos.php?success=creado");
+                exit();
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Venta {
-    private PDO $db;
+    private  $db;
 
     public function __construct() {
         $this->db = Database::getConnection();
@@ -12,7 +12,7 @@ class Venta {
         try {
             $this->db->beginTransaction(); // inicia la transaccion
 
-            // obetenemos los datos del producto para el precio y verifica el stock
+            // obtenemos los datos del producto para el precio y verifica el stock
             $stmt = $this->db->prepare("SELECT precio, stock, nombre FROM productos WHERE id = :id");
             $stmt->execute([':id' => $productoId]);
             $producto = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -31,12 +31,12 @@ class Venta {
                 ':total' => $total
             ]);
 
-            // 3. Restar el stock del producto
+            // resta el stock del producto
             $sqlStock = "UPDATE productos SET stock = stock - :cant WHERE id = :id";
             $stmtStock = $this->db->prepare($sqlStock);
             $stmtStock->execute([':cant' => $cantidad, ':id' => $productoId]);
 
-            $this->db->commit(); // Confirmamos todo
+            $this->db->commit(); // confirma toda la venta
             return ['ok' => true, 'mensaje' => 'Venta realizada con éxito'];
 
         } catch (Exception $e) {
@@ -46,7 +46,7 @@ class Venta {
     }
 
    public function listarVentas(): array {
-        // Usamos JOIN para traer el nombre del producto aunque esté en otra tabla
+        // utilizamos JOIN para traer el nombre del producto aunque esté en otra tabla
         $sql = "SELECT 
                     v.id, 
                     p.nombre, 
@@ -55,7 +55,7 @@ class Venta {
                     v.fecha_venta 
                 FROM ventas v 
                 INNER JOIN productos p ON v.producto_id = p.id 
-                ORDER BY v.id DESC"; // Ordenamos por ID si falla la fecha
+                ORDER BY v.id DESC"; // ordena por ID si falla la fecha
         
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Producto {
-    private PDO $db;
+    private  $db;
 
     public function __construct() {
         // Usamos el método estático de tu clase Database
@@ -52,4 +52,15 @@ class Producto {
         $stmt->execute([':id' => $id]);
         return $stmt->rowCount() > 0;
     }
+    //editar
+    public function editar($id, $nombre, $precio, $stock) {
+    $sql = "UPDATE productos SET nombre = :nombre, precio = :precio, stock = :stock WHERE id = :id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':nombre', $nombre);
+    $stmt->bindParam(':precio', $precio);
+    $stmt->bindParam(':stock', $stock);
+    return $stmt->execute();
+    }
+    
 }
