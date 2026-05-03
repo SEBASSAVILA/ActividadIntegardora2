@@ -16,13 +16,12 @@ class VentaServicio {
      * Retorna true si fue exitosa o un string con el mensaje de error
      */
     public function ejecutarVenta(int $productoId, int $cantidad) {
-        // 1. Validaciones básicas de entrada
         if ($cantidad <= 0) {
             return "La cantidad debe ser mayor a cero.";
         }
 
-        // 2. Buscar el producto para verificar existencia y stock actual
-        // Reutilizamos el listar() para no crear métodos extra, o puedes crear un buscarPorId
+        // busca el producto para verificar existencia y stock actual
+        // ya que reutiliza el listar() para no crear métodos extra, o puedes crear un buscarPorId
         $productos = $this->modeloProducto->listar();
         $productoEncontrado = null;
 
@@ -33,7 +32,7 @@ class VentaServicio {
             }
         }
 
-        // 3. Verificaciones de reglas de negocio
+        // verifica la regal de nbegocio 
         if (!$productoEncontrado) {
             return "El producto seleccionado no existe en el sistema.";
         }
@@ -41,9 +40,7 @@ class VentaServicio {
         if ($productoEncontrado['stock'] < $cantidad) {
             return "Stock insuficiente. Solo quedan " . $productoEncontrado['stock'] . " unidades de " . $productoEncontrado['nombre'];
         }
-
-        // 4. Si todo está OK, procedemos a la base de datos
-        // Pasamos el precio actual para que el total de la venta sea correcto
+        // pasa el precio actual para que el total de la venta sea correcto
         $resultado = $this->modeloVenta->registrarVenta(
             $productoId, 
             $cantidad, 

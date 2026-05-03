@@ -1,6 +1,6 @@
 <?php
 class Database {
-    // 1. Las propiedades deben ser estáticas también
+    
     private static $host = "localhost";
     private static $db_name = "inventariov";
     private static $username = "root";
@@ -8,18 +8,18 @@ class Database {
     private static $conn;
 
     public static function getConnection() {
-        self::$conn = null; // Usamos self:: en lugar de $this->
+    if (self::$conn === null) {
         try {
-            // 2. Aquí también cambiamos $this por self::
-            $dsn = "mysql:host=" . self::$host . ";dbname=" . self::$db_name;
-            self::$conn = new PDO($dsn, self::$username, self::$password);
-            
+           
+            $dsn = "mysql:host=localhost;port=3306;dbname=inventariov;charset=utf8";
+            self::$conn = new PDO($dsn, "root", "");
             self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            self::$conn->exec("set names utf8");
-        } catch(PDOException $exception) {
-            echo "¡Error de conexión!: " . $exception->getMessage();
+        } catch (PDOException $e) {
+            
+            die("Error: El servidor de Base de Datos está apagado. Revisa XAMPP.");
         }
-        return self::$conn;
     }
+    return self::$conn;
+}
 }
 ?>

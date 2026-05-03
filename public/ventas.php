@@ -1,15 +1,10 @@
 <?php
 require_once __DIR__ . '/../controllers/ventaController.php';
 
-$ventaController = new VentaController();
+$controller = new VentaController();
+$controller->procesar();
 
-// Procesar el registro si viene por POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $ventaController->procesar();
-}
-
-// Obtener datos para la vista (lista de productos y lista de ventas)
-$datos = $ventaController->index();
+$datos = $controller->index();
 $productos = $datos['productos'];
 $ventas = $datos['ventas'];
 ?>
@@ -18,83 +13,80 @@ $ventas = $datos['ventas'];
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Ventas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas </title>
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body class="bg-light">
+<body>
 
-<nav class="navbar navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="productos.php">Inventario</a>
-        <a class="navbar-brand" href="ventas.php">Ventas</a>
+<div class="app-container">
+    <div class="header-flex">
+        <h1 class="title-main">Módulo de <strong class="title-bold">VENTAS</strong></h1>
+        <a href="index.php" class="btn-pro btn-regreso">VOLVER AL INICIO</a>
     </div>
-</nav>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card border-success shadow">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Registrar Nueva Venta</h5>
-                </div>
-                <div class="card-body">
-                    <?php if (isset($_GET['error'])): ?>
-                        <div class="alert alert-danger"><?= htmlspecialchars($_GET['error']) ?></div>
-                    <?php endif; ?>
-                    
-                    <?php if (isset($_GET['success'])): ?>
-                        <div class="alert alert-success">Venta realizada correctamente.</div>
-                    <?php endif; ?>
+    <?php if(isset($_GET['success'])): ?>
+        <div class="alert-custom alert-success">¡Venta completada con éxito!</div>
+    <?php endif; ?>
 
-                    <form action="ventas.php" method="POST">
-                        <div class="mb-3">
-                            <label class="form-label">Seleccionar Producto</label>
-                            <select name="producto_id" class="form-select" required>
-                                <option value="">Elija un producto...</option>
-                                <?php foreach ($productos as $p): ?>
-                                    <option value="<?= $p['id'] ?>">
-                                        <?= htmlspecialchars($p['nombre']) ?> (Stock: <?= $p['stock'] ?>)
-                                    </option>
-                                <<?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Cantidad a vender</label>
-                            <input type="number" name="cantidad" class="form-control" min="1" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Completar Venta</button>
-                    </form>
+    <?php if(isset($_GET['error'])): ?>
+        <div class="alert-custom alert-error">Error: <?= htmlspecialchars($_GET['error']) ?></div>
+    <?php endif; ?>
+
+    <div class="grid-layout">
+        <div class="contenedor-principal">
+            <h3 class="section-subtitle">Registrar Nueva Venta</h3>
+            <form action="" method="POST">
+                <div class="form-group">
+                    <label class="label-custom">Seleccionar Producto</label>
+                    <select name="producto_id" class="form-control-custom" required>
+                        <option value="">Elija un producto...</option>
+                        <?php foreach($productos as $prod): ?>
+                            <option value="<?= $prod['id'] ?>">
+                                <?= htmlspecialchars($prod['nombre']) ?> (Stock: <?= $prod['stock'] ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-            </div>
+                
+                <div class="form-group">
+                    <label class="label-custom">Cantidad a vender</label>
+                    <input type="number" name="cantidad" class="form-control-custom" min="1" required>
+                </div>
+                
+                <button type="submit" class="btn-pro btn-azul btn-full">COMPLETAR VENTA</button>
+            </form>
         </div>
 
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">Historial de Transacciones</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+        <div class="contenedor-principal">
+            <h3 class="section-subtitle">Historial de Transacciones</h3>
+            <div class="table-container">
+                <table class="tabla-limpia">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($ventas)): ?>
                             <?php foreach ($ventas as $v): ?>
                             <tr>
-                                <td><?= $v['fecha_venta'] ?></td>
-                                <td><?= htmlspecialchars($v['nombre']) ?></td>
+                                <td style="font-size: 0.85rem; color: #636e72;"><?= $v['fecha_venta'] ?></td>
+                                <td style="font-weight: 600;"><?= htmlspecialchars($v['nombre']) ?></td>
                                 <td><?= $v['cantidad'] ?></td>
-                                <td>$<?= number_format($v['total'], 2) ?></td>
+                                <td class="text-price">$<?= number_format($v['total'], 2) ?></td>
                             </tr>
                             <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="status-empty">No se han realizado ventas.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

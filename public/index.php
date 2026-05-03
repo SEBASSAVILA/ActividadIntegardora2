@@ -1,56 +1,55 @@
 <?php
-require_once __DIR__ . '/../models/producto.php';
-require_once __DIR__ . '/../models/venta.php';
 
-$pModel = new Producto();
-$vModel = new Venta();
+require_once __DIR__ . '/../controllers/productoController.php';
+require_once __DIR__ . '/../controllers/ventaController.php';
 
-$totalProductos = count($pModel->listar());
-$ventas = $vModel->listarVentas();
-$gananciaTotal = array_sum(array_column($ventas, 'total'));
+$pCtrl = new ProductoController();
+$vCtrl = new VentaController();
+
+$totalProductos = count($pCtrl->index());
+$ventasData = $vCtrl->index();
+$gananciaTotal = 0;
+foreach($ventasData['ventas'] as $v) {
+    $gananciaTotal += $v['total'];
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Control | Inventario</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA BASSKA </title>
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">Sitema de Stock BASSKA</a>
-            <div class="navbar-nav">
-                <a class="nav-link active" href="index.php">Inicio</a>
-                <a class="nav-link" href="productos.php">Productos</a>
-                <a class="nav-link" href="ventas.php">Ventas</a>
-            </div>
-        </div>
-    </nav>
+<body>
 
-    <div class="container mt-5">
-        <h2 class="mb-4">Bienvenidos</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card text-white bg-primary mb-3 shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Productos en Inventario</h5>
-                        <p class="display-4"><?= $totalProductos ?></p>
-                        <a href="productos.php" class="btn btn-outline-light">Gestionar</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card text-white bg-success mb-3 shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Ganancia Total</h5>
-                        <p class="display-4">$<?= number_format($gananciaTotal, 2) ?></p>
-                        <a href="ventas.php" class="btn btn-outline-light">Ver Historial</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="app-container">
+    <div class="welcome-text">
+        <h1>SISTEMA <span>BASSKA</span></h1>
+        <p>Panel de administración de inventario y ventas</p>
     </div>
+
+    <div class="dashboard-grid">
+        <a href="productos.php" class="card-dashboard">
+            <p>Estado del inventario</p>
+            <h2>Productos</h2>
+            <span class="stat-number"><?= $totalProductos ?></span>
+            <div class="btn-pro btn-azul">Gestionar Stock</div>
+        </a>
+
+        <a href="ventas.php" class="card-dashboard">
+            <p>Rendimiento económico</p>
+            <h2>Ventas</h2>
+            <span class="stat-number">$<?= number_format($gananciaTotal, 2) ?></span>
+            <div class="btn-pro btn-rosa">Nueva Transacción</div>
+        </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px; color: rgba(255,255,255,0.5); font-size: 0.8rem;">
+          BASSKA/AVILA SEBASTIAN ECOTEC - Todos los derechos reservados.
+    </div>
+</div>
+
 </body>
 </html>
