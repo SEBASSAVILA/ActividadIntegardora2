@@ -125,7 +125,7 @@ body {
     border-color: #3f5efb;
     box-shadow: 0 0 8px rgba(63, 94, 251, 0.2);
 }
-/* Encabezados y títulos */
+/* Encabezados y titulos */
 .header-flex {
     display: flex; 
     justify-content: space-between; 
@@ -167,7 +167,7 @@ body {
     width: 100%;
 }
 
-/* Alertas de Venta */
+/* Alertas de venta */
 .alert-custom {
     padding: 15px; 
     border-radius: 10px; 
