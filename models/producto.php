@@ -5,7 +5,7 @@ class Producto {
     private  $db;
 
     public function __construct() {
-        // Usamos el método estático de tu clase Database
+        // Usamos el metodo estático de tu clase Database
         $this->db = Database::getConnection(); 
     }
 
@@ -19,7 +19,7 @@ class Producto {
         return $stmt->fetchAll(); 
     }
 
-    // Método para insertar con validaciones profesionales
+    // Metodo para insertar con validaciones profesionales
     public function crear(string $nombre, float $precio, int $stock): array {
         $nombre  = trim($nombre);
         $errores = [];
@@ -45,14 +45,14 @@ class Producto {
         return ['ok' => true, 'id' => (int) $this->db->lastInsertId()];
     }
 
-    // Método para borrar
+    // Metodo para borrar
     public function eliminar(int $id): bool {
         if ($id <= 0) return false;
         $stmt = $this->db->prepare("DELETE FROM productos WHERE id = :id");
         $stmt->execute([':id' => $id]);
         return $stmt->rowCount() > 0;
     }
-    //editar
+    //Meto de editar
     public function editar($id, $nombre, $precio, $stock) {
     $sql = "UPDATE productos SET nombre = :nombre, precio = :precio, stock = :stock WHERE id = :id";
     $stmt = $this->db->prepare($sql);

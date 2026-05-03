@@ -17,26 +17,26 @@ $productos = $controller->index();
 
 <div class="app-container">
     <div class="header-flex">
-        <h1 class="title-main">Gestión de <strong class="title-bold">PRODUCTOS</strong></h1>
+        <h1 class="title-main">Gestion de <strong class="title-bold">PRODUCTOS</strong></h1>
         <a href="index.php" class="btn-pro btn-regreso">VOLVER AL INICIO</a>
     </div>
 
     <div class="grid-layout">
         <div class="contenedor-principal">
-            <h3 class="section-subtitle">Nuevo Registro</h3>
+            <h3 class="section-subtitle">Nuevo registro</h3>
             <form action="" method="POST">
                 <div class="form-group">
-                    <label class="label-custom">Nombre del Producto</label>
+                    <label class="label-custom">Nombre del producto</label>
                     <input type="text" name="nombre" class="form-control-custom" placeholder="Ej. Laptop Gaming" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="label-custom">Precio Unitario ($)</label>
+                    <label class="label-custom">Precio unitario ($)</label>
                     <input type="number" step="0.01" name="precio" class="form-control-custom" placeholder="0.00" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="label-custom">Stock Disponible</label>
+                    <label class="label-custom">Stock disponible</label>
                     <input type="number" name="stock" class="form-control-custom" placeholder="Cantidad inicial" required>
                 </div>
                 
@@ -45,7 +45,7 @@ $productos = $controller->index();
         </div>
 
         <div class="contenedor-principal">
-            <h3 class="section-subtitle">Inventario en Tiempo Real</h3>
+            <h3 class="section-subtitle">Inventario en tiempo real</h3>
             <div class="table-container">
                 <table class="tabla-limpia">
                     <thead>
@@ -66,7 +66,7 @@ $productos = $controller->index();
                                 <td class="text-price">$<?= number_format($p['precio'], 2) ?></td>
                                 <td>
                                     <span class="<?= ($p['stock'] <= 0) ? 'badge-danger' : '' ?>">
-                                        <?= $p['stock'] ?> uds
+                                        <?= $p['stock'] ?> 
                                     </span>
                                 </td>
                                 <td>
@@ -82,7 +82,7 @@ $productos = $controller->index();
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" class="status-empty">No hay datos para mostrar. Verifica la conexión a MySQL en XAMPP.</td>
+                                <td colspan="5" class="status-empty">No hay datos para mostrar. Verifica la conexion a MySQL en XAMPP</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -94,7 +94,7 @@ $productos = $controller->index();
 
 <div id="modalEditar" class="modal">
     <div class="modal-content">
-        <h3 class="section-subtitle">Actualizar Producto</h3>
+        <h3 class="section-subtitle">Actualizar producto</h3>
         <form action="" method="POST">
             <input type="hidden" name="accion" value="editar">
             <input type="hidden" name="id_edit" id="edit_id">
